@@ -25,9 +25,9 @@
             background: white;
         }
         .login-box {
-            width: 90%; /* ocupa 90% do espaço disponível */
-            max-width: 600px; /* antes era 400px */
-            padding: 40px; /* mais espaçamento interno */
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
             border-radius: 12px;
             box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
         }
@@ -54,7 +54,14 @@
             <div class="login-box">
                 <h3 class="text-center mb-4">Entrar na Brainrot Company</h3>
 
-                <form action="/login" method="POST">
+                <!-- Exibir erros -->
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        {{ $errors->first('login') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('login.post') }}" method="POST">
                     @csrf
                     <!-- Email -->
                     <div class="mb-3">
@@ -78,7 +85,7 @@
                     <button type="submit" class="btn btn-primary w-100 mb-3">Entrar</button>
                 </form>
 
-                <!-- Login com Google -->
+                <!-- Login com Google (não funcional ainda) -->
                 <div class="d-grid mb-3">
                     <button class="btn google-btn w-100">
                         <img src="https://img.icons8.com/color/16/000000/google-logo.png" class="me-2"/> Entrar com Google
@@ -87,14 +94,4 @@
 
                 <!-- Links -->
                 <div class="text-center">
-                    <a href="/register">Criar conta</a> | 
-                    <a href="#">Esqueci minha senha</a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-</body>
-</html>
+                    <a href="{{ route('register') }}">Criar conta</a> |
