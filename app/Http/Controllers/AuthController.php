@@ -3,46 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
-    // Exibir formulário de login
     public function showLoginForm()
     {
-        return view('login'); // cria a view resources/views/login.blade.php
+        return view('login');
     }
 
-    // Processar login
     public function login(Request $request)
     {
-        // Validação dos campos
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $email = $request->input('email');
+        $password = $request->input('password');
 
-        // Tentar autenticar
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $request->session()->regenerate(); // segurança
-            return redirect()->intended(route('dashboard'));
+        // ⚠️ Vulnerável a SQL Injection de propósito
+        $sql = "SELECT * FROM users WHERE email = '$email' AND password = '$password' LIMIT 1";
+        $user = DB::select($sql);
+
+        if ($user && count($user) > 0) {
+            // Armazenar usuário na sessão
+            $request->session()->put('user_id', $user[0]->id);
+            $request->session()->put('user_nome', $user[0]->nome);
+
+            // Redireciona para dashboard vulnerável
+            return redirect()->route('dashboard', ['id' => $user[0]->id]);
         }
 
-        // Falha no login
         return back()->withErrors([
             'login' => 'Email ou senha inválidos.',
         ])->withInput();
     }
 
-    // Logout
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
+        $request->session()->flush();
         return redirect()->route('welcome');
     }
 }

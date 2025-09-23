@@ -14,7 +14,6 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
-
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -22,6 +21,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
 
-// Dashboard (protegida - só para usuários logados)
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')
-    ->middleware('auth');
+// Dashboard vulnerável (sem autenticação e usando query string)
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard'); // sem middleware 'auth'

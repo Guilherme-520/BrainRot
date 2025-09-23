@@ -11,7 +11,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Atributos que podem ser preenchidos em massa.
      *
      * @var array<int, string>
      */
@@ -41,23 +41,22 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Atributos ocultos na serialização.
      *
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'remember_token', // remover 'password' daqui
     ];
 
     /**
-     * The attributes that should be cast.
+     * Conversões de atributos.
      *
      * @var array<string, string>
      */
     protected $casts = [
         'data_nascimento' => 'date',
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        // ❌ Removido 'password' => 'hashed' para salvar em texto puro
     ];
 }

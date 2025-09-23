@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
@@ -43,14 +42,14 @@ class RegisterController extends Controller
             'tipo_cartao' => 'required|in:credito,debito',
         ]);
 
-        // Criar usuário
+        // ⚠️ Vulnerável: senha em texto puro, compatível com login
         User::create([
             'nome' => $request->nome,
             'email' => $request->email,
             'telefone' => $request->telefone,
             'cpf' => $request->cpf,
             'data_nascimento' => $request->data_nascimento,
-            'password' => Hash::make($request->password),
+            'password' => $request->password, // sem Hash::make
 
             'rua' => $request->rua,
             'numero' => $request->numero,
